@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: udagram-frontend-app
+  labels:
+    app: udagram-frontend-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: udagram-frontend-app
+  template:
+    metadata:
+      labels:
+        app: udagram-frontend-app
+    spec:
+      containers:
+      - name: udagram-frontend
+        image: minhtri188/udagram-frontend:v6
+        ports:
+        - containerPort: 8100
+        env:
+          # Define the environment variable
+          - name: POSTGRES_HOST # Notice that this name here can different from the key name in the ConfigMap.
+            valueFrom:
+              configMapKeyRef:
+                name: env-configmap   # The ConfigMap name.
+                key: POSTGRES_HOST                    # The key to fetch from ConfigMap.
+          - name: POSTGRES_DB
+            valueFrom:
+              configMapKeyRef:
+                name: env-configmap
+                key: POSTGRES_DB
+          - name: AWS_BUCKET
+            valueFrom:
+              configMapKeyRef:
+                name: env-configmap
+                key: AWS_BUCKET
+          - name: AWS_REGION
+            valueFrom:
+              configMapKeyRef:
+                name: env-configmap
+                key: AWS_REGION
+          - name: AWS_PROFILE
+            valueFrom:
+              configMapKeyRef:
+                name: env-configmap
+                key: AWS_PROFILE
+          - name: URL
+            valueFrom:
+              configMapKeyRef:
+                name: env-configmap
+                key: URL
+
+          - name: POSTGRES_USERNAME
+            valueFrom:
+                secretKeyRef:
+                    name: env-secret
+                    key: POSTGRES_USERNAME
+                    optional: false # same as default; "xxx" must exist and include a key named "xxx"
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+                secretKeyRef:
+                    name: env-secret
+                    key: POSTGRES_PASSWORD
+                    optional: false
+          - name: JWT_SECRET
+            valueFrom:
+                secretKeyRef:
+                    name: env-secret
+                    key: JWT_SECRET
+                    optional: false
+
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+                secretKeyRef:
+                    name: aws-secret
+                    key: AWS_ACCESS_KEY_ID
+                    optional: false
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+                secretKeyRef:
+                    name: aws-secret
+                    key: AWS_SECRET_ACCESS_KEY
+                    optional: false

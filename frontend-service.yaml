@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: udagram-frontend-app
+  name: udagram-frontend-app-svc
+  namespace: default
+  selfLink: /api/v1/namespaces/default/services/udagram-frontend-app-svc
+spec:
+  ports:
+  - port: 8100
+    protocol: TCP
+    targetPort: 8100
+  selector:
+    app: udagram-frontend-app
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
